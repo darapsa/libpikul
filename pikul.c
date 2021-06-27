@@ -1,12 +1,14 @@
 #include <string.h>
-#include <json.h>
 #include "shipping.h"
+#include "handler.h"
 
 CURL *curl;
 json_tokener *tokener;
 static struct shipping shipping;
 
 extern inline void headers(struct shipping *shipping, const char *fields[], char *provisions[]);
+extern inline void handle(const char *, size_t, struct container *);
+
 extern void anteraja_init(char *[], struct shipping *);
 extern void anteraja_services_request(const char *, const char *, double,
 		struct shipping *, char **, char **);
@@ -100,4 +102,14 @@ void pikul_cleanup()
 	curl_slist_free_all(shipping.headers);
 	curl_easy_cleanup(curl);
 	curl_global_cleanup();
+}
+
+void recurse(struct json_object *outer, const char *keys[], struct json_object **services)
+{
+	struct json_object *inner = NULL;
+	json_object_object_get_ex(outer, *keys, &inner);
+	if (*++keys)
+		recurse(inner, keys, services);
+	else
+		*services = inner;
 }
