@@ -2,7 +2,7 @@
 #define PIKUL_H
 
 enum pikul_company {
-	PIKUL_COMPANY_ANTERAJA = 0,
+	PIKUL_COMPANY_ANTERAJA,
 	PIKUL_COMPANY_SICEPAT
 };
 

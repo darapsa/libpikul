@@ -3,11 +3,11 @@
 #include "pikul.h"
 
 enum {
-	KEY_CODE,
-	KEY_NAME,
-	KEY_ETD,
-	KEY_COST,
-	KEY_OBJECTS
+	CODE,
+	NAME,
+	ETD,
+	COST,
+	OBJECTS
 };
 
 struct container {
@@ -32,7 +32,7 @@ inline void handle(const char *contents, size_t num_bytes, struct container *con
 	} else if (!json_object_is_type(response, json_type_object) || error != json_tokener_success)
 		return;
 	struct json_object *services = NULL;
-	recurse(response, &(*container->keys)[KEY_OBJECTS], &services);
+	recurse(response, &(*container->keys)[OBJECTS], &services);
 	size_t length = json_object_array_length(services);
 	*(container->services) = malloc(sizeof(struct pikul_services)
 			+ sizeof(struct pikul_service *[length]));
@@ -46,18 +46,18 @@ inline void handle(const char *contents, size_t num_bytes, struct container *con
 		while (!json_object_iter_equal(&iterator, &iterator_end)) {
 			const char *key = json_object_iter_peek_name(&iterator);
 			json_object *val = json_object_iter_peek_value(&iterator);
-			if (!strcmp(key, (*container->keys)[KEY_COST]))
+			if (!strcmp(key, (*container->keys)[COST]))
 				service->cost = json_object_get_double(val);
 			else {
 				int len = json_object_get_string_len(val);
 				if (len) {
 					char *value = malloc(len + 1);
 					strcpy(value, json_object_get_string(val));
-					if (!strcmp(key, (*container->keys)[KEY_CODE]))
+					if (!strcmp(key, (*container->keys)[CODE]))
 						service->code = value;
-					else if (!strcmp(key, (*container->keys)[KEY_NAME]))
+					else if (!strcmp(key, (*container->keys)[NAME]))
 						service->name = value;
-					else if (!strcmp(key, (*container->keys)[KEY_ETD]))
+					else if (!strcmp(key, (*container->keys)[ETD]))
 						service->etd = value;
 				}
 			}
