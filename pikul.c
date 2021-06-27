@@ -1,4 +1,3 @@
-#include <string.h>
 #include "shipping.h"
 #include "handler.h"
 
@@ -31,6 +30,16 @@ void pikul_init(enum pikul_company company, char *provisions[])
 	}
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, shipping.headers);
 	tokener = json_tokener_new();
+}
+
+void recurse(struct json_object *outer, const char *keys[], struct json_object **services)
+{
+	struct json_object *inner = NULL;
+	json_object_object_get_ex(outer, *keys, &inner);
+	if (*++keys)
+		recurse(inner, keys, services);
+	else
+		*services = inner;
 }
 
 struct pikul_services *pikul_services(const char *origin, const char *destination, double weight)
@@ -102,14 +111,4 @@ void pikul_cleanup()
 	curl_slist_free_all(shipping.headers);
 	curl_easy_cleanup(curl);
 	curl_global_cleanup();
-}
-
-void recurse(struct json_object *outer, const char *keys[], struct json_object **services)
-{
-	struct json_object *inner = NULL;
-	json_object_object_get_ex(outer, *keys, &inner);
-	if (*++keys)
-		recurse(inner, keys, services);
-	else
-		*services = inner;
 }
