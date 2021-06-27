@@ -1,13 +1,19 @@
 #include "shipping.h"
 #include "handler.h"
 
+enum {
+	BASE_PATH,
+	ACCESS_KEY
+};
+
 extern CURL *curl;
 
 void anteraja_init(char *provisions[], struct shipping *shipping)
 {
-	shipping->base = malloc(strlen(*provisions) + 1);
-	strcpy(shipping->base, *provisions);
-	headers(shipping, (const char *[]){ "access-key-id", "secret-access-key", NULL }, ++provisions);
+	shipping->base = malloc(strlen(provisions[BASE_PATH]) + 1);
+	strcpy(shipping->base, provisions[BASE_PATH]);
+	headers(shipping, (const char *[]){ "access-key-id", "secret-access-key", NULL },
+			&provisions[ACCESS_KEY]);
 	shipping->headers = curl_slist_append(shipping->headers, "Content-Type:application/json");
 }
 
@@ -33,13 +39,12 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 {
 	size_t realsize = size * nmemb;
 	handle(contents, realsize, &(struct container){ services, (const char *[]){
-		"product_code",
-		"product_name",
-		"etd",
-		"rates",
-		"content",
-		"services",
-		NULL
-	}});
+			"product_code",
+			"product_name",
+			"etd",
+			"rates",
+			"content",
+			"services",
+			NULL}});
 	return realsize;
 }
