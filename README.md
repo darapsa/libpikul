@@ -3,8 +3,8 @@
 # Building
 
 ```sh
-$ git clone git://darapsa.org/libpikul.git
-$ cd libpikul
+$ git clone git://darapsa.org/pikul.git
+$ cd pikul
 $ autoreconf -is
 $ mkdir build
 $ cd build
