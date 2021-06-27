@@ -6,6 +6,7 @@ CURL *curl;
 json_tokener *tokener;
 static struct shipping shipping;
 
+extern inline void headers(struct shipping *shipping, const char *fields[], char *provisions[]);
 extern void anteraja_init(char *[], struct shipping *);
 extern void anteraja_services_request(const char *, const char *, double,
 		struct shipping *, char **, char **);
