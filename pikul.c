@@ -32,14 +32,14 @@ void pikul_init(enum pikul_company company, char *provisions[])
 	tokener = json_tokener_new();
 }
 
-void recurse(struct json_object *outer, const char *keys[], struct json_object **services)
+void recurse(struct json_object *outer, const char *keys[], struct json_object **last)
 {
 	struct json_object *inner = NULL;
 	json_object_object_get_ex(outer, *keys, &inner);
 	if (*++keys)
-		recurse(inner, keys, services);
+		recurse(inner, keys, last);
 	else
-		*services = inner;
+		*last = inner;
 }
 
 struct pikul_services *pikul_services(const char *origin, const char *destination, double weight)
