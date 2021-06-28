@@ -1,5 +1,6 @@
 .deps
 .libs
+*-configure
 *.la
 *.lo
 *.o
@@ -12,6 +13,7 @@ build*
 compile
 config.*
 configure
+configure.scan
 depcomp
 install-sh
 libtool
