@@ -9,7 +9,7 @@ extern inline void headers(struct shipping *shipping, const char *fields[], char
 extern inline void handle(const char *, size_t, struct container *);
 
 extern void anteraja_init(char *[], struct shipping *);
-extern void anteraja_services_request(const char *, const char *, double,
+extern void anteraja_services(const char *, const char *, double,
 		struct shipping *, char **, char **);
 extern size_t anteraja_services_handle(const char *, size_t, size_t, struct pikul_services **);
 
@@ -51,7 +51,7 @@ struct pikul_services *pikul_services(const char *origin, const char *destinatio
 	size_t (*handler)(const char *, size_t, size_t, struct pikul_services **);
 	switch (shipping.company) {
 		case PIKUL_COMPANY_ANTERAJA:
-			anteraja_services_request(origin, destination, weight, &shipping, &url, &post);
+			anteraja_services(origin, destination, weight, &shipping, &url, &post);
 			handler = anteraja_services_handle;
 			break;
 		default:

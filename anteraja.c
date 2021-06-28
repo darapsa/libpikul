@@ -17,7 +17,7 @@ void anteraja_init(char *provisions[], struct shipping *shipping)
 	shipping->headers = curl_slist_append(shipping->headers, "Content-Type:application/json");
 }
 
-void anteraja_services_request(const char *origin, const char *destination, double weight,
+void anteraja_services(const char *origin, const char *destination, double weight,
 		struct shipping *shipping, char **url, char **post)
 {
 	static const char *path = "serviceRates";
