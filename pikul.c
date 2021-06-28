@@ -5,7 +5,7 @@ CURL *curl;
 json_tokener *tokener;
 static struct shipping shipping;
 
-extern inline void headers(struct shipping *shipping, const char *fields[], char *provisions[]);
+extern inline void headers(const char *[], char *[], struct shipping *);
 extern inline void handle_services(const char *, size_t, const char *[], const char *[], const char *[],
 		struct pikul_services **);
 

@@ -3,18 +3,15 @@
 
 extern CURL *curl;
 
-static const char *status_trail[] = {
-	"status",
-	NULL
-};
+static const char *status_trail[] = { "status", NULL };
 
 void anteraja_init(char *provisions[], struct shipping *shipping)
 {
 	enum { BASE_PATH, ACCESS_KEY };
 	shipping->base = malloc(strlen(provisions[BASE_PATH]) + 1);
 	strcpy(shipping->base, provisions[BASE_PATH]);
-	headers(shipping, (const char *[]){ "access-key-id", "secret-access-key", NULL },
-			&provisions[ACCESS_KEY]);
+	headers((const char *[]){ "access-key-id", "secret-access-key", NULL },
+			&provisions[ACCESS_KEY], shipping);
 	shipping->headers = curl_slist_append(shipping->headers, "Content-Type:application/json");
 }
 

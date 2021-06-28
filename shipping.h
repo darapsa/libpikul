@@ -8,7 +8,7 @@ struct shipping {
 	struct curl_slist *headers;
 };
 
-inline void headers(struct shipping *shipping, const char *fields[], char *provisions[])
+inline void headers(const char *fields[], char *provisions[], struct shipping *shipping)
 {
 	shipping->headers = NULL;
 	while (*fields) {
