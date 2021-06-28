@@ -6,7 +6,7 @@ extern json_tokener *tokener;
 void recurse(struct json_object *, const char *[], struct json_object **);
 
 inline void handle_services(const char *contents, size_t num_bytes, const char *status_trail[],
-		const char *services_trail[], const char *attributes[], struct pikul_services **services)
+		const char *trail[], const char *attributes[], struct pikul_services **services)
 {
 	json_object *response = json_tokener_parse_ex(tokener, contents, num_bytes);
 	enum json_tokener_error error = json_tokener_get_error(tokener);
@@ -24,7 +24,7 @@ inline void handle_services(const char *contents, size_t num_bytes, const char *
 	if (json_object_get_int(status) != 200)
 		return;
 	struct json_object *objects = NULL;
-	recurse(response, services_trail, &objects);
+	recurse(response, trail, &objects);
 	size_t length = json_object_array_length(objects);
 	*services = malloc(sizeof(struct pikul_services)
 			+ sizeof(struct pikul_service *[length]));
