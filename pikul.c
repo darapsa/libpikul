@@ -10,8 +10,7 @@ extern inline void handle_services(const char *, size_t, const char *[], const c
 		struct pikul_services **);
 
 extern void anteraja_init(char *[], struct shipping *);
-extern void anteraja_services(const char *, const char *, double,
-		struct shipping *, char **, char **);
+extern void anteraja_services(const char *, const char *, double, struct shipping *, char **, char **);
 extern size_t anteraja_services_handle(const char *, size_t, size_t, struct pikul_services **);
 
 void pikul_init(enum pikul_company company, char *provisions[])
