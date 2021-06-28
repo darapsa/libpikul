@@ -2,7 +2,7 @@
 #define PIKUL_H
 
 enum pikul_company {
-	PIKUL_COMPANY_ANTERAJA
+	PIKUL_ANTERAJA
 };
 
 struct pikul_service {

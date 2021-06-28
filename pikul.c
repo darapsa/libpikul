@@ -23,7 +23,7 @@ void pikul_init(enum pikul_company company, char *provisions[])
 #endif
 	shipping.company = company;
 	switch (company) {
-		case PIKUL_COMPANY_ANTERAJA:
+		case PIKUL_ANTERAJA:
 			anteraja_init(provisions, &shipping);
 			break;
 		default:
@@ -51,7 +51,7 @@ struct pikul_services *pikul_services(const char *origin, const char *destinatio
 	char *post = NULL;
 	size_t (*handler)(const char *, size_t, size_t, struct pikul_services **);
 	switch (shipping.company) {
-		case PIKUL_COMPANY_ANTERAJA:
+		case PIKUL_ANTERAJA:
 			anteraja_services(origin, destination, weight, &shipping, &url, &post);
 			handler = anteraja_services_handle;
 			break;
