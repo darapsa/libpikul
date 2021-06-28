@@ -1,15 +1,16 @@
 #include "shipping.h"
 #include "handler.h"
 
-enum {
-	BASE_PATH,
-	ACCESS_KEY
-};
-
 extern CURL *curl;
+
+static const char *status_trail[] = {
+	"status",
+	NULL
+};
 
 void anteraja_init(char *provisions[], struct shipping *shipping)
 {
+	enum { BASE_PATH, ACCESS_KEY };
 	shipping->base = malloc(strlen(provisions[BASE_PATH]) + 1);
 	strcpy(shipping->base, provisions[BASE_PATH]);
 	headers(shipping, (const char *[]){ "access-key-id", "secret-access-key", NULL },
@@ -38,13 +39,15 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 		struct pikul_services **services)
 {
 	size_t realsize = size * nmemb;
-	handle(contents, realsize, &(struct container){ services, (const char *[]){
+	handle_services(contents, realsize, status_trail, (const char *[]){
+			"content",
+			"services",
+			NULL
+			}, (const char *[]){
 			"product_code",
 			"product_name",
 			"etd",
-			"rates",
-			"content",
-			"services",
-			NULL}});
+			"rates"
+			}, services);
 	return realsize;
 }

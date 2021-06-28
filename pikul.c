@@ -6,7 +6,8 @@ json_tokener *tokener;
 static struct shipping shipping;
 
 extern inline void headers(struct shipping *shipping, const char *fields[], char *provisions[]);
-extern inline void handle(const char *, size_t, struct container *);
+extern inline void handle_services(const char *, size_t, const char *[], const char *[], const char *[],
+		struct pikul_services **);
 
 extern void anteraja_init(char *[], struct shipping *);
 extern void anteraja_services(const char *, const char *, double,
@@ -92,6 +93,8 @@ static int servicecmp(const void *service1, const void *service2)
 double pikul_cost(const char *origin, const char *destination, double weight, const char *code)
 {
 	struct pikul_services *services = pikul_services(origin, destination, weight);
+	if (!services)
+		return .0;
 	qsort(services->list, services->length, sizeof(struct pikul_service *), servicecmp);
 	struct pikul_service *key_service = malloc(sizeof(struct pikul_service));
 	memset(key_service, '\0', sizeof(struct pikul_service));
