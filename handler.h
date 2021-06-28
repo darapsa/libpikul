@@ -26,8 +26,7 @@ inline void handle_services(const char *contents, size_t num_bytes, const char *
 	struct json_object *objects = NULL;
 	recurse(response, trail, &objects);
 	size_t length = json_object_array_length(objects);
-	*services = malloc(sizeof(struct pikul_services)
-			+ sizeof(struct pikul_service *[length]));
+	*services = malloc(sizeof(struct pikul_services) + sizeof(struct pikul_service *[length]));
 	(*services)->length = length;
 	enum { CODE, NAME, ETD, COST };
 	for (size_t i = 0; i < length; i++) {
