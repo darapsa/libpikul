@@ -1,4 +1,4 @@
-# Pikul
+# libpikul
 
 # Building
 
