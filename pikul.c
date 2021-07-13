@@ -92,7 +92,7 @@ static int servicecmp(const void *service1, const void *service2)
 double pikul_cost(const char *origin, const char *destination, double weight, const char *code)
 {
 	struct pikul_services *services = pikul_services(origin, destination, weight);
-	if (!services)
+	if (!services || !services->length)
 		return .0;
 	qsort(services->list, services->length, sizeof(struct pikul_service *), servicecmp);
 	struct pikul_service *key_service = malloc(sizeof(struct pikul_service));
