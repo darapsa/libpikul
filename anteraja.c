@@ -1,3 +1,6 @@
+#ifdef DEBUG
+#include <stdio.h>
+#endif
 #include "shipping.h"
 #include "handler.h"
 
@@ -36,6 +39,10 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 		struct pikul_services **services)
 {
 	size_t realsize = size * nmemb;
+#ifdef DEBUG
+	((char *)contents)[realsize] = '\0';
+	fprintf(stderr, "%s\n", contents);
+#endif
 	handle_services(contents, realsize, status_trail, (const char *[]){
 			"content",
 			"services",
