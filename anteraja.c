@@ -32,7 +32,7 @@ void anteraja_services(const char *origin, const char *destination, double weigh
 	sprintf(*url, "%s%s", shipping->base, path);
 	*post = malloc(strlen(POST) + strlen(origin) + strlen(destination) + strlen("50000")
 			- 2 * strlen("%s") - strlen("%d") + 1);
-	sprintf(*post, POST, origin, destination, (int)weight * 1000);
+	sprintf(*post, POST, origin, destination, weight < 1.0 ? 1000 : (int)weight * 1000);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
