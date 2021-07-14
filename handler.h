@@ -1,3 +1,6 @@
+#ifdef DEBUG
+#include <stdio.h>
+#endif
 #include <string.h>
 #include <json.h>
 #include "pikul.h"
@@ -8,6 +11,10 @@ void recurse(struct json_object *, const char *[], struct json_object **);
 inline void handle_services(const char *contents, size_t num_bytes, const char *status_trail[],
 		const char *trail[], const char *attributes[], struct pikul_services **services)
 {
+#ifdef DEBUG
+	((char *)contents)[num_bytes] = '\0';
+	fprintf(stderr, "%s\n", contents);
+#endif
 	json_object *response = json_tokener_parse_ex(tokener, contents, num_bytes);
 	enum json_tokener_error error = json_tokener_get_error(tokener);
 	if (!response) {
