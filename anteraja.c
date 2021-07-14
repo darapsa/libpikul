@@ -4,6 +4,12 @@
 #include "shipping.h"
 #include "handler.h"
 
+#define POST \
+"{\
+\"origin\":\"%s\",\
+\"destination\":\"%s\",\
+\"weight\":%d\
+}"
 extern CURL *curl;
 
 static const char *status_trail[] = { "status", NULL };
@@ -24,14 +30,12 @@ void anteraja_services(const char *origin, const char *destination, double weigh
 	static const char *path = "serviceRates";
 	*url = malloc(strlen(shipping->base) + strlen(path) + 1);
 	sprintf(*url, "%s%s", shipping->base, path);
-	static const char *format = "{"
-		"\"origin\": \"xx.xx.xx\","
-		"\"destination\": \"xx.xx.xx\","
-		"\"weight\": xxxxx"
-		"}";
-	*post = malloc(strlen(format) + 1);
-	sprintf(*post, "{\"origin\": \"%s\",\"destination\": \"%s\",\"weight\": %d}",
-			origin, destination, (int)weight);
+	*post = malloc(strlen(POST) + strlen(origin) + strlen(destination) + strlen("50000")
+			- 2 * strlen("%s") - strlen("%d") + 1);
+	sprintf(*post, POST, origin, destination, (int)weight * 1000);
+#ifdef DEBUG
+	printf("POST: %s\n", *post);
+#endif
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
@@ -41,7 +45,7 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 	size_t realsize = size * nmemb;
 #ifdef DEBUG
 	((char *)contents)[realsize] = '\0';
-	fprintf(stderr, "%s\n", contents);
+	printf("%s\n", contents);
 #endif
 	handle_services(contents, realsize, status_trail, (const char *[]){
 			"content",
