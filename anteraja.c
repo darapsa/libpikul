@@ -33,9 +33,6 @@ void anteraja_services(const char *origin, const char *destination, double weigh
 	*post = malloc(strlen(POST) + strlen(origin) + strlen(destination) + strlen("50000")
 			- 2 * strlen("%s") - strlen("%d") + 1);
 	sprintf(*post, POST, origin, destination, (int)weight * 1000);
-#ifdef DEBUG
-	printf("POST: %s\n", *post);
-#endif
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
@@ -45,7 +42,7 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 	size_t realsize = size * nmemb;
 #ifdef DEBUG
 	((char *)contents)[realsize] = '\0';
-	printf("%s\n", contents);
+	fprintf(stderr, "%s\n", contents);
 #endif
 	handle_services(contents, realsize, status_trail, (const char *[]){
 			"content",
