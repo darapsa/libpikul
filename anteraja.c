@@ -1,12 +1,14 @@
 #include "shipping.h"
 #include "handler.h"
 
-#define POST \
+#define SERVICES_PATH "serviceRates"
+#define SERVICES_POST \
 "{\
 \"origin\":\"%s\",\
 \"destination\":\"%s\",\
 \"weight\":%d\
 }"
+
 extern CURL *curl;
 
 static const char *status_trail[] = { "status", NULL };
@@ -24,12 +26,11 @@ void anteraja_init(char *provisions[], struct shipping *shipping)
 void anteraja_services(const char *origin, const char *destination, double weight,
 		struct shipping *shipping, char **url, char **post)
 {
-	static const char *path = "serviceRates";
-	*url = malloc(strlen(shipping->base) + strlen(path) + 1);
-	sprintf(*url, "%s%s", shipping->base, path);
-	*post = malloc(strlen(POST) + strlen(origin) + strlen(destination) + strlen("50000")
+	*url = malloc(strlen(shipping->base) + strlen(SERVICES_PATH) + 1);
+	sprintf(*url, "%s%s", shipping->base, SERVICES_PATH);
+	*post = malloc(strlen(SERVICES_POST) + strlen(origin) + strlen(destination) + strlen("50000")
 			- 2 * strlen("%s") - strlen("%d") + 1);
-	sprintf(*post, POST, origin, destination, weight < 1.0 ? 1000 : (int)weight * 1000);
+	sprintf(*post, SERVICES_POST, origin, destination, weight < 1.0 ? 1000 : (int)weight * 1000);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
