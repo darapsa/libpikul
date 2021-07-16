@@ -108,8 +108,10 @@ void anteraja_order(const char *trx_id, const char *service, const char *sender_
 				atoi(items[i][PRICE]), atoi(items[i][WEIGHT]) * 1000);
 		if (json)
 			json = realloc(json, strlen(json) + length);
-		else
+		else {
 			json = malloc(length);
+			memset(json, '\0', strlen(json));
+		}
 		strcat(json, item);
 		if (i + 1 < nitems)
 			json[length] = ',';
