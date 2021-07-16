@@ -8,6 +8,7 @@
 \"destination\":\"%s\",\
 \"weight\":%d\
 }"
+#define SERVICES_WEIGHT 5
 
 extern CURL *curl;
 
@@ -26,7 +27,7 @@ void anteraja_services(const char *origin, const char *destination, double weigh
 {
 	*url = malloc(strlen(shipping.base) + strlen(SERVICES_PATH) + 1);
 	sprintf(*url, "%s%s", shipping.base, SERVICES_PATH);
-	*post = malloc(strlen(SERVICES_POST) + strlen(origin) + strlen(destination) + strlen("50000")
+	*post = malloc(strlen(SERVICES_POST) + strlen(origin) + strlen(destination) + SERVICES_WEIGHT
 			- 2 * strlen("%s") - strlen("%d") + 1);
 	sprintf(*post, SERVICES_POST, origin, destination, weight < 1.0 ? 1000 : (int)weight * 1000);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
