@@ -24,5 +24,5 @@ double pikul_cost(const char *origin, const char *destination, double weight, co
 char *pikul_order(const char *trx_id, const char *service, const char *sender_name,
                 const char *sender_phone, const char *origin, const char *sender_address,
                 const char *receiver_name, const char *receiver_phone, const char *destination,
-                const char *receiver_address, int nitems, char **items[], double subtotal);
+                const char *receiver_address, int nitems, char **items[], _Bool insurance, double subtotal);
 void pikul_cleanup();
