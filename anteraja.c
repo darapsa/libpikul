@@ -15,6 +15,7 @@
 "{\
 \"booking_id\":\"%s-%s\",\
 \"service_code\":\"%s\",\
+\"parcel_total_weight\":%d,\
 \"shipper\":{\
 \"name\":\"%s\",\
 \"phone\":\"%s\",\
@@ -32,6 +33,7 @@
 ],\
 \"declared_value\":%d\
 }"
+#define ORDER_WEIGHT 5
 #define ORDER_SUBTOTAL 9
 
 #define ORDER_ITEM \
@@ -100,13 +102,18 @@ void anteraja_order(const char *trx_id, const char *service, const char *sender_
 	sprintf(*url, "%s%s", shipping.base, ORDER_PATH);
 	enum { SKU, QUANTITY, DESCRIPTION, PRICE, WEIGHT };
 	char *json = NULL;
+	double total_weight = 0;
 	for (int i = 0; i < nitems; i++) {
 		size_t length = strlen(ORDER_ITEM) + strlen(items[i][DESCRIPTION]) + ORDER_ITEM_QUANTITY
 			+ ORDER_ITEM_PRICE + ORDER_ITEM_WEIGHT - strlen("%s") - 3 * strlen("%d")
 			+ strlen(",");
 		char item[length + 1];
+		double weight = atof(items[i][WEIGHT]) * 1000.0;
+		if (weight < 100.0)
+			weight = 100.0;
 		sprintf(item, ORDER_ITEM, items[i][DESCRIPTION], atoi(items[i][QUANTITY]),
-				atoi(items[i][PRICE]), atoi(items[i][WEIGHT]) * 1000);
+				atoi(items[i][PRICE]), (int)weight);
+		total_weight += weight;
 		if (json)
 			json = realloc(json, strlen(json) + length + 1);
 		else {
@@ -120,13 +127,13 @@ void anteraja_order(const char *trx_id, const char *service, const char *sender_
 			json[strlen(json)] = '\0';
 	}
 	*post = malloc(strlen(ORDER_POST) + strlen(prefix) + strlen(trx_id) + strlen(service)
-			+ strlen(sender_name) + strlen(sender_phone) + strlen(origin)
+			+ ORDER_WEIGHT + strlen(sender_name) + strlen(sender_phone) + strlen(origin)
 			+ strlen(sender_address) + strlen(receiver_name) + strlen(receiver_phone)
 			+ strlen(destination) + strlen(receiver_address) + strlen(json) + ORDER_SUBTOTAL
-			- 12 * strlen("%s") - strlen("%d") + 1);
-	sprintf(*post, ORDER_POST, prefix, trx_id, service, sender_name, sender_phone, origin,
-			sender_address, receiver_name, receiver_phone, destination, receiver_address, json,
-			(int)subtotal);
+			- 12 * strlen("%s") - 2 * strlen("%d") + 1);
+	sprintf(*post, ORDER_POST, prefix, trx_id, service, (int)total_weight, sender_name, sender_phone,
+			origin, sender_address, receiver_name, receiver_phone, destination,
+			receiver_address, json, (int)subtotal);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
