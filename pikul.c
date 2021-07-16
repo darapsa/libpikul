@@ -4,6 +4,7 @@
 CURL *curl;
 json_tokener *tokener;
 struct shipping shipping;
+static char *waybill = NULL;
 
 extern inline void headers(const char *[], char *[]);
 extern inline void handle(enum type, const char *, size_t, const char *[], const char *[], const char *[],
@@ -12,6 +13,11 @@ extern inline void handle(enum type, const char *, size_t, const char *[], const
 extern void anteraja_init(char *[]);
 extern void anteraja_services(const char *, const char *, double, char **, char **);
 extern size_t anteraja_services_handle(const char *, size_t, size_t, struct pikul_services **);
+extern void anteraja_order(const char *, const char *, const char *, const char *, const char *,
+		const char *, const char *, const char *, const char *, const char *, int,
+		char **[], double, char **, char **);
+extern size_t anteraja_order_handle(const char *, size_t size, size_t nmemb, char **);
+extern void anteraja_cleanup();
 
 void pikul_init(enum pikul_company company, char *provisions[])
 {
@@ -106,8 +112,45 @@ double pikul_cost(const char *origin, const char *destination, double weight, co
 	return cost;
 }
 
+char *pikul_order(const char *trx_id, const char *service, const char *sender_name,
+		const char *sender_phone, const char *origin, const char *sender_address,
+		const char *receiver_name, const char *receiver_phone, const char *destination,
+		const char *receiver_address, int nitems, char **items[], double subtotal)
+{
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &waybill);
+	char *url;
+	char *post = NULL;
+	size_t (*handler)(const char *, size_t, size_t, char **);
+	switch (shipping.company) {
+		case PIKUL_ANTERAJA:
+			anteraja_order(trx_id, service, sender_name, sender_phone, origin, sender_address,
+					receiver_name, receiver_phone, destination, receiver_address,
+					nitems, items, subtotal, &url, &post);
+			handler = anteraja_order_handle;
+			break;
+		default:
+			break;
+	}
+	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, handler);
+	curl_easy_perform(curl);
+	if (post)
+		free(post);
+	free(url);
+	return waybill;
+}
+
 void pikul_cleanup()
 {
+	switch (shipping.company) {
+		case PIKUL_ANTERAJA:
+			anteraja_cleanup();
+			break;
+		default:
+			break;
+	}
+	if (waybill)
+		free(waybill);
 	free(shipping.base);
 	json_tokener_free(tokener);
 	curl_slist_free_all(shipping.headers);
