@@ -37,7 +37,7 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 		struct pikul_services **services)
 {
 	size_t realsize = size * nmemb;
-	handle_services(contents, realsize, status_trail, (const char *[]){
+	handle(SERVICES, contents, realsize, status_trail, (const char *[]){
 			"content",
 			"services",
 			NULL

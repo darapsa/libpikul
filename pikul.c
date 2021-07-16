@@ -6,8 +6,8 @@ json_tokener *tokener;
 struct shipping shipping;
 
 extern inline void headers(const char *[], char *[]);
-extern inline void handle_services(const char *, size_t, const char *[], const char *[], const char *[],
-		struct pikul_services **);
+extern inline void handle(enum type, const char *, size_t, const char *[], const char *[], const char *[],
+		void *);
 
 extern void anteraja_init(char *[]);
 extern void anteraja_services(const char *, const char *, double, char **, char **);
