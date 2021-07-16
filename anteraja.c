@@ -102,21 +102,22 @@ void anteraja_order(const char *trx_id, const char *service, const char *sender_
 	char *json = NULL;
 	for (int i = 0; i < nitems; i++) {
 		size_t length = strlen(ORDER_ITEM) + strlen(items[i][DESCRIPTION]) + ORDER_ITEM_QUANTITY
-			+ ORDER_ITEM_PRICE + ORDER_ITEM_WEIGHT - strlen("%s") - 3 * strlen("%d") + 1;
-		char item[length];
+			+ ORDER_ITEM_PRICE + ORDER_ITEM_WEIGHT - strlen("%s") - 3 * strlen("%d")
+			+ strlen(",");
+		char item[length + 1];
 		sprintf(item, ORDER_ITEM, items[i][DESCRIPTION], atoi(items[i][QUANTITY]),
 				atoi(items[i][PRICE]), atoi(items[i][WEIGHT]) * 1000);
 		if (json)
-			json = realloc(json, strlen(json) + length);
+			json = realloc(json, strlen(json) + length + 1);
 		else {
-			json = malloc(length);
+			json = malloc(length + 1);
 			memset(json, '\0', strlen(json));
 		}
 		strcat(json, item);
 		if (i + 1 < nitems)
-			json[length] = ',';
+			strcat(json, ",");
 		else
-			json[length] = '\0';
+			json[strlen(json)] = '\0';
 	}
 	*post = malloc(strlen(ORDER_POST) + strlen(prefix) + strlen(trx_id) + strlen(service)
 			+ strlen(sender_name) + strlen(sender_phone) + strlen(origin)
