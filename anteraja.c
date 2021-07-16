@@ -13,21 +13,19 @@ extern CURL *curl;
 
 static const char *status_trail[] = { "status", NULL };
 
-void anteraja_init(char *provisions[], struct shipping *shipping)
+void anteraja_init(char *provisions[])
 {
-	enum { BASE_PATH, ACCESS_KEY };
-	shipping->base = malloc(strlen(provisions[BASE_PATH]) + 1);
-	strcpy(shipping->base, provisions[BASE_PATH]);
-	headers((const char *[]){ "access-key-id", "secret-access-key", NULL },
-			&provisions[ACCESS_KEY], shipping);
-	shipping->headers = curl_slist_append(shipping->headers, "Content-Type:application/json");
+	enum { BASE_PATH, ACCESS_KEY_ID, SECRET_ACCESS_KEY, PREFIX };
+	shipping.base = malloc(strlen(provisions[BASE_PATH]) + 1);
+	strcpy(shipping.base, provisions[BASE_PATH]);
+	headers((const char *[]){ "access-key-id", "secret-access-key", NULL }, &provisions[ACCESS_KEY_ID]);
+	shipping.headers = curl_slist_append(shipping.headers, "Content-Type:application/json");
 }
 
-void anteraja_services(const char *origin, const char *destination, double weight,
-		struct shipping *shipping, char **url, char **post)
+void anteraja_services(const char *origin, const char *destination, double weight, char **url, char **post)
 {
-	*url = malloc(strlen(shipping->base) + strlen(SERVICES_PATH) + 1);
-	sprintf(*url, "%s%s", shipping->base, SERVICES_PATH);
+	*url = malloc(strlen(shipping.base) + strlen(SERVICES_PATH) + 1);
+	sprintf(*url, "%s%s", shipping.base, SERVICES_PATH);
 	*post = malloc(strlen(SERVICES_POST) + strlen(origin) + strlen(destination) + strlen("50000")
 			- 2 * strlen("%s") - strlen("%d") + 1);
 	sprintf(*post, SERVICES_POST, origin, destination, weight < 1.0 ? 1000 : (int)weight * 1000);

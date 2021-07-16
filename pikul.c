@@ -3,14 +3,14 @@
 
 CURL *curl;
 json_tokener *tokener;
-static struct shipping shipping;
+struct shipping shipping;
 
-extern inline void headers(const char *[], char *[], struct shipping *);
+extern inline void headers(const char *[], char *[]);
 extern inline void handle_services(const char *, size_t, const char *[], const char *[], const char *[],
 		struct pikul_services **);
 
-extern void anteraja_init(char *[], struct shipping *);
-extern void anteraja_services(const char *, const char *, double, struct shipping *, char **, char **);
+extern void anteraja_init(char *[]);
+extern void anteraja_services(const char *, const char *, double, char **, char **);
 extern size_t anteraja_services_handle(const char *, size_t, size_t, struct pikul_services **);
 
 void pikul_init(enum pikul_company company, char *provisions[])
@@ -23,7 +23,7 @@ void pikul_init(enum pikul_company company, char *provisions[])
 	shipping.company = company;
 	switch (company) {
 		case PIKUL_ANTERAJA:
-			anteraja_init(provisions, &shipping);
+			anteraja_init(provisions);
 			break;
 		default:
 			break;
@@ -51,7 +51,7 @@ struct pikul_services *pikul_services(const char *origin, const char *destinatio
 	size_t (*handler)(const char *, size_t, size_t, struct pikul_services **);
 	switch (shipping.company) {
 		case PIKUL_ANTERAJA:
-			anteraja_services(origin, destination, weight, &shipping, &url, &post);
+			anteraja_services(origin, destination, weight, &url, &post);
 			handler = anteraja_services_handle;
 			break;
 		default:
