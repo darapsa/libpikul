@@ -106,7 +106,7 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 	sprintf(*url, "%s%s", shipping.base, ORDER_PATH);
 	enum { SKU, QUANTITY, DESCRIPTION, PRICE, WEIGHT };
 	char *json = NULL;
-	double total_weight = 0;
+	double total_weight = .0;
 	for (int i = 0; i < nitems; i++) {
 		size_t length = strlen(ORDER_ITEM) + strlen(items[i][DESCRIPTION]) + ORDER_ITEM_QUANTITY
 			+ ORDER_ITEM_PRICE + ORDER_ITEM_WEIGHT - strlen("%s") - 3 * strlen("%d")
