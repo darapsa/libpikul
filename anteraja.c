@@ -112,15 +112,15 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			+ ORDER_ITEM_PRICE + ORDER_ITEM_WEIGHT - strlen("%s") - 3 * strlen("%d")
 			+ strlen(",");
 		char item[length + 1];
-		double weight = atof(items[i][WEIGHT]) * 1000.0;
-		if (weight < 100.0)
-			weight = 100.0;
+		int quantity = atoi(items[i][QUANTITY]);
 		double price = atof(items[i][PRICE]);
 		if (price < 1000.0)
 			price = 1000.0;
-		sprintf(item, ORDER_ITEM, items[i][DESCRIPTION], atoi(items[i][QUANTITY]), (int)price,
-				(int)weight);
+		double weight = atof(items[i][WEIGHT]) * 1000.0;
+		if (weight < 100.0)
+			weight = 100.0;
 		total_weight += weight;
+		sprintf(item, ORDER_ITEM, items[i][DESCRIPTION], quantity, (int)price, (int)weight);
 		if (json)
 			json = realloc(json, strlen(json) + length + 1);
 		else {
@@ -132,6 +132,7 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			strcat(json, ",");
 		else
 			json[strlen(json)] = '\0';
+		i += quantity - 1;
 	}
 	*post = malloc(strlen(ORDER_POST) + strlen(prefix) + strlen(order_number) + strlen(service)
 			+ ORDER_WEIGHT + strlen(sender_name) + strlen(sender_phone) + strlen(origin)
