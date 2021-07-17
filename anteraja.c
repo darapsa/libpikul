@@ -146,7 +146,6 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			destination, receiver_address, receiver_postal, json, insurance ? "true" : "false",
 			subtotal < 1000.0 ? 1000 :(int)subtotal);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
-	printf("POST: %s\n", *post);
 }
 
 size_t anteraja_order_handle(const char *contents, size_t size, size_t nmemb, char **tracking_number)
