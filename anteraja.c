@@ -139,7 +139,7 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 	sprintf(*post, ORDER_POST, prefix, order_number, service, (int)total_weight, sender_name,
                         sender_phone, origin, sender_address, sender_postal, receiver_name, receiver_phone,
 			destination, receiver_address, receiver_postal, json, insurance ? "true" : "false",
-			(int)subtotal);
+			subtotal < 1000.0 ? 1000 :(int)subtotal);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
