@@ -4,7 +4,6 @@
 CURL *curl;
 json_tokener *tokener;
 struct shipping shipping;
-static char *tracking_number = NULL;
 
 extern inline void headers(const char *[], char *[]);
 extern inline void handle(enum type, const char *, size_t, const char *[], const char *[], const char *[],
@@ -118,6 +117,7 @@ char *pikul_order(const char *order_number, const char *service, const char *sen
 		const char *destination, const char *receiver_address, const char *receiver_postal,
 		int nitems, char **items[], _Bool insurance, double subtotal)
 {
+	char *tracking_number = NULL;
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &tracking_number);
 	char *url;
 	char *post = NULL;
@@ -151,8 +151,6 @@ void pikul_cleanup()
 		default:
 			break;
 	}
-	if (tracking_number)
-		free(tracking_number);
 	free(shipping.base);
 	json_tokener_free(tokener);
 	curl_slist_free_all(shipping.headers);
