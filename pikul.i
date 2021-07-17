@@ -50,6 +50,7 @@ void pikul_init(enum pikul_company company, char *provisions[]);
 double pikul_cost(const char *origin, const char *destination, double weight, const char *service);
 char *pikul_order(const char *order_number, const char *service, const char *sender_name,
                 const char *sender_phone, const char *origin, const char *sender_address,
-                const char *receiver_name, const char *receiver_phone, const char *destination,
-                const char *receiver_address, int nitems, char **items[], _Bool insurance, double subtotal);
+                const char *sender_postal, const char *receiver_name, const char *receiver_phone,
+                const char *destination, const char *receiver_address, const char *receiver_postal,
+                int nitems, char **items[], _Bool insurance, double subtotal);
 void pikul_cleanup();

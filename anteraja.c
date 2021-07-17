@@ -20,13 +20,15 @@
 \"name\":\"%s\",\
 \"phone\":\"%s\",\
 \"district\":\"%s\",\
-\"address\":\"%s\"\
+\"address\":\"%s\",\
+\"postcode\":\"%s\"\
 },\
 \"receiver\":{\
 \"name\":\"%s\",\
 \"phone\":\"%s\",\
 \"district\":\"%s\",\
-\"address\":\"%s\"\
+\"address\":\"%s\",\
+\"postcode\":\"%s\"\
 },\
 \"items\":[\
 %s\
@@ -96,9 +98,9 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 
 void anteraja_order(const char *order_number, const char *service, const char *sender_name,
 		const char *sender_phone, const char *origin, const char *sender_address,
-		const char *receiver_name, const char *receiver_phone, const char *destination,
-		const char *receiver_address, int nitems, char **items[], _Bool insurance, double subtotal,
-		char **url, char **post)
+		const char *sender_postal, const char *receiver_name, const char *receiver_phone,
+		const char *destination, const char *receiver_address, const char *receiver_postal,
+		int nitems, char **items[], _Bool insurance, double subtotal, char **url, char **post)
 {
 	*url = malloc(strlen(shipping.base) + strlen(ORDER_PATH) + 1);
 	sprintf(*url, "%s%s", shipping.base, ORDER_PATH);
@@ -130,12 +132,14 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 	}
 	*post = malloc(strlen(ORDER_POST) + strlen(prefix) + strlen(order_number) + strlen(service)
 			+ ORDER_WEIGHT + strlen(sender_name) + strlen(sender_phone) + strlen(origin)
-			+ strlen(sender_address) + strlen(receiver_name) + strlen(receiver_phone)
-			+ strlen(destination) + strlen(receiver_address) + strlen(json) + ORDER_INSURANCE
-                        + ORDER_SUBTOTAL - 13 * strlen("%s") - 2 * strlen("%d") + 1);
+			+ strlen(sender_address) + strlen(sender_postal) + strlen(receiver_name)
+			+ strlen(receiver_phone) + strlen(destination) + strlen(receiver_address)
+			+ strlen(receiver_postal) + strlen(json) + ORDER_INSURANCE + ORDER_SUBTOTAL
+			- 15 * strlen("%s") - 2 * strlen("%d") + 1);
 	sprintf(*post, ORDER_POST, prefix, order_number, service, (int)total_weight, sender_name,
-                        sender_phone, origin, sender_address, receiver_name, receiver_phone, destination,
-			receiver_address, json, insurance ? "true" : "false", (int)subtotal);
+                        sender_phone, origin, sender_address, sender_postal, receiver_name, receiver_phone,
+			destination, receiver_address, receiver_postal, json, insurance ? "true" : "false",
+			(int)subtotal);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
