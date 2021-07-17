@@ -113,6 +113,8 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			+ strlen(",");
 		char item[length + 1];
 		int quantity = atoi(items[i][QUANTITY]);
+		if (quantity > 1)
+			nitems -= quantity - 1;
 		double price = atof(items[i][PRICE]);
 		if (price < 1000.0)
 			price = 1000.0;
@@ -132,7 +134,6 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			strcat(json, ",");
 		else
 			json[strlen(json)] = '\0';
-		i += quantity - 1;
 	}
 	*post = malloc(strlen(ORDER_POST) + strlen(prefix) + strlen(order_number) + strlen(service)
 			+ ORDER_WEIGHT + strlen(sender_name) + strlen(sender_phone) + strlen(origin)
@@ -145,6 +146,7 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			destination, receiver_address, receiver_postal, json, insurance ? "true" : "false",
 			subtotal < 1000.0 ? 1000 :(int)subtotal);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
+	printf("POST: %s\n", *post);
 }
 
 size_t anteraja_order_handle(const char *contents, size_t size, size_t nmemb, char **tracking_number)
