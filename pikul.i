@@ -41,6 +41,10 @@
         free($1);
 }
 
+%typemap(in) _Bool {
+        $1 = $input;
+}
+
 %rename("%(strip:[pikul_])s") "";
 void pikul_init(enum pikul_company company, char *provisions[]);
 double pikul_cost(const char *origin, const char *destination, double weight, const char *service);
