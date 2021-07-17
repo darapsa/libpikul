@@ -146,14 +146,14 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
-size_t anteraja_order_handle(const char *contents, size_t size, size_t nmemb, char **waybill)
+size_t anteraja_order_handle(const char *contents, size_t size, size_t nmemb, char **tracking_number)
 {
 	size_t realsize = size * nmemb;
 	handle(ORDER, contents, realsize, status_trail, (const char *[]){
 			"content",
 			"waybill_no",
 			NULL
-			}, NULL, waybill);
+			}, NULL, tracking_number);
 	return realsize;
 }
 

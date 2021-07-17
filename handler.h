@@ -75,9 +75,9 @@ inline void handle(enum type type, const char *contents, size_t num_bytes, const
 			;
 			struct json_object *string = NULL;
 			recurse(response, trail, &string);
-			char **waybill = (char **)data;
-			*waybill = malloc(json_object_get_string_len(string) + 1);
-			strcpy(*waybill, json_object_get_string(string));
+			char **tracking_number = (char **)data;
+			*tracking_number = malloc(json_object_get_string_len(string) + 1);
+			strcpy(*tracking_number, json_object_get_string(string));
 			break;
 		default:
 			break;
