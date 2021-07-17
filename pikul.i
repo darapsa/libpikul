@@ -46,11 +46,9 @@
 }
 
 %rename("%(strip:[pikul_])s") "";
-void pikul_init(enum pikul_company company, char *provisions[]);
-double pikul_cost(const char *origin, const char *destination, double weight, const char *service);
-char *pikul_order(const char *order_number, const char *service, const char *sender_name,
-                const char *sender_phone, const char *origin, const char *sender_address,
-                const char *sender_postal, const char *receiver_name, const char *receiver_phone,
-                const char *destination, const char *receiver_address, const char *receiver_postal,
-                int nitems, char **items[], _Bool insurance, double subtotal);
+void pikul_init(enum pikul_company, char *[]);
+double pikul_cost(const char *, const char *, double, const char *);
+char *pikul_order(const char *, const char *, const char *, const char *, const char *, const char *,
+                const char *, const char *, const char *, const char *, const char *, const char *, int,
+                char **[], _Bool, double);
 void pikul_cleanup();
