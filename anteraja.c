@@ -115,8 +115,11 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 		double weight = atof(items[i][WEIGHT]) * 1000.0;
 		if (weight < 100.0)
 			weight = 100.0;
-		sprintf(item, ORDER_ITEM, items[i][DESCRIPTION], atoi(items[i][QUANTITY]),
-				atoi(items[i][PRICE]), (int)weight);
+		double price = atof(items[i][PRICE]);
+		if (price < 1000.0)
+			price = 1000.0;
+		sprintf(item, ORDER_ITEM, items[i][DESCRIPTION], atoi(items[i][QUANTITY]), (int)price,
+				(int)weight);
 		total_weight += weight;
 		if (json)
 			json = realloc(json, strlen(json) + length + 1);
