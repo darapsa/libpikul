@@ -94,7 +94,7 @@ size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
 	return realsize;
 }
 
-void anteraja_order(const char *trx_id, const char *service, const char *sender_name,
+void anteraja_order(const char *order_number, const char *service, const char *sender_name,
 		const char *sender_phone, const char *origin, const char *sender_address,
 		const char *receiver_name, const char *receiver_phone, const char *destination,
 		const char *receiver_address, int nitems, char **items[], _Bool insurance, double subtotal,
@@ -128,13 +128,13 @@ void anteraja_order(const char *trx_id, const char *service, const char *sender_
 		else
 			json[strlen(json)] = '\0';
 	}
-	*post = malloc(strlen(ORDER_POST) + strlen(prefix) + strlen(trx_id) + strlen(service)
+	*post = malloc(strlen(ORDER_POST) + strlen(prefix) + strlen(order_number) + strlen(service)
 			+ ORDER_WEIGHT + strlen(sender_name) + strlen(sender_phone) + strlen(origin)
 			+ strlen(sender_address) + strlen(receiver_name) + strlen(receiver_phone)
 			+ strlen(destination) + strlen(receiver_address) + strlen(json) + ORDER_INSURANCE
                         + ORDER_SUBTOTAL - 13 * strlen("%s") - 2 * strlen("%d") + 1);
-	sprintf(*post, ORDER_POST, prefix, trx_id, service, (int)total_weight, sender_name, sender_phone,
-			origin, sender_address, receiver_name, receiver_phone, destination,
+	sprintf(*post, ORDER_POST, prefix, order_number, service, (int)total_weight, sender_name,
+                        sender_phone, origin, sender_address, receiver_name, receiver_phone, destination,
 			receiver_address, json, insurance ? "true" : "false", (int)subtotal);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }

@@ -112,7 +112,7 @@ double pikul_cost(const char *origin, const char *destination, double weight, co
 	return cost;
 }
 
-char *pikul_order(const char *trx_id, const char *service, const char *sender_name,
+char *pikul_order(const char *order_number, const char *service, const char *sender_name,
 		const char *sender_phone, const char *origin, const char *sender_address,
 		const char *receiver_name, const char *receiver_phone, const char *destination,
 		const char *receiver_address, int nitems, char **items[], _Bool insurance, double subtotal)
@@ -123,9 +123,9 @@ char *pikul_order(const char *trx_id, const char *service, const char *sender_na
 	size_t (*handler)(const char *, size_t, size_t, char **);
 	switch (shipping.company) {
 		case PIKUL_ANTERAJA:
-			anteraja_order(trx_id, service, sender_name, sender_phone, origin, sender_address,
-					receiver_name, receiver_phone, destination, receiver_address,
-					nitems, items, insurance, subtotal, &url, &post);
+			anteraja_order(order_number, service, sender_name, sender_phone, origin,
+                                        sender_address, receiver_name, receiver_phone, destination,
+                                        receiver_address, nitems, items, insurance, subtotal, &url, &post);
 			handler = anteraja_order_handle;
 			break;
 		default:
