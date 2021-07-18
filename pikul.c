@@ -5,18 +5,17 @@ CURL *curl;
 json_tokener *tokener;
 struct shipping shipping;
 
-extern inline void headers(const char *[], char *[]);
-extern inline void handle(enum type, const char *, size_t, const char *[], const char *[], const char *[],
-		void *);
+void headers(const char *[], char *[]);
+void handle(enum type, const char *, size_t, const char *[], const char *[], const char *[], void *);
 
-extern void anteraja_init(char *[]);
-extern void anteraja_services(const char *, const char *, double, char **, char **);
-extern size_t anteraja_services_handle(const char *, size_t, size_t, struct pikul_services **);
-extern void anteraja_order(const char *, const char *, const char *, const char *, const char *,
-		const char *, const char *, const char *, const char *, const char *, const char *,
-		const char *, int, char **[], double, char **, char **);
-extern size_t anteraja_order_handle(const char *, size_t size, size_t nmemb, char **);
-extern void anteraja_cleanup();
+void anteraja_init(char *[]);
+void anteraja_services(const char *, const char *, double, char **, char **);
+size_t anteraja_services_handle(const char *, size_t, size_t, struct pikul_services **);
+void anteraja_order(const char *, const char *, const char *, const char *, const char *, const char *,
+		const char *, const char *, const char *, const char *, const char *, const char *, int,
+		char **[], double, char **, char **);
+size_t anteraja_order_handle(const char *, size_t size, size_t nmemb, char **);
+void anteraja_cleanup();
 
 void pikul_init(enum pikul_company company, char *provisions[])
 {
