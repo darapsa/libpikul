@@ -41,14 +41,10 @@
         free($1);
 }
 
-%typemap(in) _Bool {
-        $1 = $input;
-}
-
 %rename("%(strip:[pikul_])s") "";
 void pikul_init(enum pikul_company, char *[]);
 double pikul_cost(const char *, const char *, double, const char *);
 char *pikul_order(const char *, const char *, const char *, const char *, const char *, const char *,
                 const char *, const char *, const char *, const char *, const char *, const char *, int,
-                char **[], _Bool, double);
+                char **[], double);
 void pikul_cleanup();

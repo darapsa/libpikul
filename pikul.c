@@ -14,7 +14,7 @@ extern void anteraja_services(const char *, const char *, double, char **, char 
 extern size_t anteraja_services_handle(const char *, size_t, size_t, struct pikul_services **);
 extern void anteraja_order(const char *, const char *, const char *, const char *, const char *,
 		const char *, const char *, const char *, const char *, const char *, const char *,
-		const char *, int, char **[], _Bool, double, char **, char **);
+		const char *, int, char **[], double, char **, char **);
 extern size_t anteraja_order_handle(const char *, size_t size, size_t nmemb, char **);
 extern void anteraja_cleanup();
 
@@ -115,7 +115,7 @@ char *pikul_order(const char *order_number, const char *service, const char *sen
 		const char *sender_phone, const char *origin, const char *sender_address,
 		const char *sender_postal, const char *receiver_name, const char *receiver_phone,
 		const char *destination, const char *receiver_address, const char *receiver_postal,
-		int nitems, char **items[], _Bool insurance, double subtotal)
+		int nitems, char **items[], double subtotal)
 {
 	char *tracking_number = NULL;
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &tracking_number);
@@ -127,7 +127,7 @@ char *pikul_order(const char *order_number, const char *service, const char *sen
 			anteraja_order(order_number, service, sender_name, sender_phone, origin,
                                         sender_address, sender_postal, receiver_name, receiver_phone,
 					destination, receiver_address, receiver_postal, nitems, items,
-					insurance, subtotal, &url, &post);
+					subtotal, &url, &post);
 			handler = anteraja_order_handle;
 			break;
 		default:

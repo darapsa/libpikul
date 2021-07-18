@@ -100,7 +100,7 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 		const char *sender_phone, const char *origin, const char *sender_address,
 		const char *sender_postal, const char *receiver_name, const char *receiver_phone,
 		const char *destination, const char *receiver_address, const char *receiver_postal,
-		int nitems, char **items[], _Bool insurance, double subtotal, char **url, char **post)
+		int nitems, char **items[], double subtotal, char **url, char **post)
 {
 	*url = malloc(strlen(shipping.base) + strlen(ORDER_PATH) + 1);
 	sprintf(*url, "%s%s", shipping.base, ORDER_PATH);
@@ -142,9 +142,9 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			+ strlen(receiver_postal) + strlen(json) + ORDER_INSURANCE + ORDER_SUBTOTAL
 			- 15 * strlen("%s") - 2 * strlen("%d") + 1);
 	sprintf(*post, ORDER_POST, prefix, order_number, service, (int)total_weight, sender_name,
-                        sender_phone, origin, sender_address, sender_postal, receiver_name, receiver_phone,
-			destination, receiver_address, receiver_postal, json, insurance ? "true" : "false",
-			subtotal < 1000.0 ? 1000 :(int)subtotal);
+			sender_phone, origin, sender_address, sender_postal, receiver_name, receiver_phone,
+			destination, receiver_address, receiver_postal, json,
+			total_weight < 1000.0 ? "true" : "false", subtotal < 1000.0 ? 1000 : (int)subtotal);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 

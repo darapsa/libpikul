@@ -29,7 +29,7 @@ char *pikul_order(const char *order_number, const char *service, const char *sen
 		const char *sender_phone, const char *origin, const char *sender_address,
 		const char *sender_postal, const char *receiver_name, const char *receiver_phone,
 		const char *destination, const char *receiver_address, const char *receiver_postal,
-                int nitems, char **items[], _Bool insurance, double subtotal);
+                int nitems, char **items[], double subtotal);
 void pikul_cleanup();
 
 #ifdef __cplusplus
