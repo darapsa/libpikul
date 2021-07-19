@@ -62,6 +62,8 @@ struct pikul_services *pikul_services(const char *origin, const char *destinatio
 	}
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, handler);
+	if (post)
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post);
 	curl_easy_perform(curl);
 	if (post)
 		free(post);
@@ -133,6 +135,8 @@ char *pikul_order(const char *order_number, const char *service, const char *sen
 	}
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, handler);
+	if (post)
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post);
 	curl_easy_perform(curl);
 	if (post)
 		free(post);

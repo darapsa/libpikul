@@ -50,8 +50,6 @@
 #define ORDER_ITEM_PRICE 9
 #define ORDER_ITEM_WEIGHT 5
 
-extern CURL *curl;
-
 static const char *status_trail[] = { "status", NULL };
 static char *prefix = NULL;
 
@@ -75,7 +73,6 @@ void anteraja_services(const char *origin, const char *destination, double weigh
 	*post = malloc(strlen(SERVICES_POST) + strlen(origin) + strlen(destination) + SERVICES_WEIGHT
 			- 2 * strlen("%s") - strlen("%d") + 1);
 	sprintf(*post, SERVICES_POST, origin, destination, weight < 1.0 ? 1000 : (int)weight * 1000);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
 size_t anteraja_services_handle(const char *contents, size_t size, size_t nmemb,
@@ -144,7 +141,6 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			sender_phone, origin, sender_address, sender_postal, receiver_name, receiver_phone,
 			destination, receiver_address, receiver_postal, json,
 			total_weight < 1000.0 ? "true" : "false", subtotal < 1000.0 ? 1000 : (int)subtotal);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, *post);
 }
 
 size_t anteraja_order_handle(const char *contents, size_t size, size_t nmemb, char **tracking_number)
