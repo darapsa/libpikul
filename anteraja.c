@@ -138,10 +138,11 @@ void anteraja_order(const char *order_number, const char *service, const char *s
 			+ strlen(receiver_phone) + strlen(destination) + strlen(receiver_address)
 			+ strlen(receiver_postal) + strlen(json) + ORDER_INSURANCE + ORDER_SUBTOTAL
 			- 15 * strlen("%s") - 2 * strlen("%d") + 1);
-	sprintf(shipping.post, ORDER_POST, prefix, order_number, service, (int)total_weight, sender_name,
-			sender_phone, origin, sender_address, sender_postal, receiver_name, receiver_phone,
-			destination, receiver_address, receiver_postal, json,
-			total_weight < 1000.0 ? "true" : "false", subtotal < 1000.0 ? 1000 : (int)subtotal);
+	sprintf(shipping.post, ORDER_POST, prefix, order_number, service,
+			total_weight < 1000.0 ? 1000 : (int)total_weight, sender_name, sender_phone,
+			origin, sender_address, sender_postal, receiver_name, receiver_phone, destination,
+			receiver_address, receiver_postal, json, total_weight < 1000.0 ? "true" : "false",
+			subtotal < 1000.0 ? 1000 : (int)subtotal);
 	static const char *trail[] = {
 		"content",
 		"waybill_no",
