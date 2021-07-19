@@ -209,8 +209,12 @@ char *pikul_order(const char *order_number, const char *service, const char *sen
 			break;
 	}
 	curl_easy_setopt(curl, CURLOPT_URL, shipping.url);
-	if (shipping.post)
+	if (shipping.post) {
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, shipping.post);
+#ifdef DEBUG
+		fprintf(stderr, "POST: %s\n", shipping.post);
+#endif
+	}
 	shipping.mode = ORDER;
 	curl_easy_perform(curl);
 	if (shipping.post)
