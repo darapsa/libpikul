@@ -17,6 +17,21 @@
 %typemap(freearg) char *[] {
         free($1);
 }
+%typemap(out) char ** {
+        int len = 0;
+        while ($1[len])
+                len++;
+        SV **svs = malloc(len * sizeof(SV *));
+        for (int i = 0; i < len; i++) {
+                svs[i] = sv_newmortal();
+                sv_setpv((SV *)svs[i], $1[i]);
+        };
+        AV *myav = av_make(len, svs);
+        free(svs);
+        $result = newRV_noinc((SV *)myav);
+        sv_2mortal($result);
+        argvi++;
+}
 
 %typemap(in) char **[] {
         AV *items = (AV *)SvRV($input);
@@ -43,6 +58,7 @@
 
 %rename("%(strip:[pikul_])s") "";
 void pikul_init(enum pikul_company, char *[]);
+char **pikul_codes(const char *, const char *, double);
 double pikul_cost(const char *, const char *, double, const char *);
 char *pikul_order(const char *, const char *, const char *, const char *, const char *, const char *,
                 const char *, const char *, const char *, const char *, const char *, const char *, int,
