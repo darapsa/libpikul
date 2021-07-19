@@ -2,13 +2,30 @@
 #include <stdio.h>
 #endif
 #include <string.h>
+#include <curl/curl.h>
 #include <json.h>
 #include "pikul.h"
 
+extern struct shipping {
+	enum pikul_company company;
+	char *base;
+	struct curl_slist *headers;
+} shipping;
 extern json_tokener *tokener;
+
 void recurse(struct json_object *, const char *[], struct json_object **);
 
 enum type { SERVICES, ORDER };
+
+inline void headers(const char *fields[], char *provisions[])
+{
+	shipping.headers = NULL;
+	while (*fields) {
+		char header[strlen(*fields) + strlen(*provisions) + 2];
+		sprintf(header, "%s:%s", *fields++, *provisions++);
+		shipping.headers = curl_slist_append(shipping.headers, header);
+	}
+}
 
 inline void handle(enum type type, const char *contents, size_t num_bytes, const char *status_trail[],
 		const char *trail[], const char *attributes[], void *data)

@@ -1,5 +1,4 @@
-#include "shipping.h"
-#include "handler.h"
+#include "common.h"
 
 #define SERVICES_PATH "serviceRates"
 #define SERVICES_POST \

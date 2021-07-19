@@ -1,5 +1,4 @@
-#include "shipping.h"
-#include "handler.h"
+#include "common.h"
 
 CURL *curl;
 json_tokener *tokener;
