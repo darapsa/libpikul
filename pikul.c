@@ -191,27 +191,34 @@ char *pikul_html(const char *origin, const char *destination, double weight,
         char *html;
         if (!strcmp(widget, "select")) {
                 char *options = NULL;
-                for (size_t i = 0; i < services->length; i++) {
-                        struct pikul_service *service = services->list[i];
-                        char *code_prefix = code_prefixes[shipping.company];
-                        char *name_prefix = name_prefixes[shipping.company];
-                        size_t code_length = strlen(code_prefix) + strlen(service->code);
-                        char code[code_length + 1];
-                        sprintf(code, "%s%s", code_prefix, service->code);
-                        _Bool selected = !strcmp(code, value);
-                        size_t length = strlen(OPTION) + code_length + (selected ? strlen(" selected") : 0)
-                                + strlen(name_prefix) + strlen(service->name)
-                                - OPTION_NUM_PARAMS * strlen("%s");
-                        char option[length + 1];
-                        sprintf(option, OPTION, code, selected ? " selected" : "",
-                                        name_prefix, service->name);
-                        if (options)
-                                options = realloc(options, strlen(options) + length + 1);
-                        else {
-                                options = malloc(length + 1);
-                                memset(options, '\0', strlen(options));
-                        }
-                        strcat(options, option);
+		if (!services || !services->length) {
+			static const char *empty = "<option value=\"\">Not enough information</option>";
+			options = malloc(strlen(empty) + 1);
+			strcpy(options, empty);
+		} else {
+			for (size_t i = 0; i < services->length; i++) {
+				struct pikul_service *service = services->list[i];
+				char *code_prefix = code_prefixes[shipping.company];
+				char *name_prefix = name_prefixes[shipping.company];
+				size_t code_length = strlen(code_prefix) + strlen(service->code);
+				char code[code_length + 1];
+				sprintf(code, "%s%s", code_prefix, service->code);
+				_Bool selected = !strcmp(code, value);
+				size_t length = strlen(OPTION) + code_length
+					+ (selected ? strlen(" selected") : 0)
+					+ strlen(name_prefix) + strlen(service->name)
+					- OPTION_NUM_PARAMS * strlen("%s");
+				char option[length + 1];
+				sprintf(option, OPTION, code, selected ? " selected" : "",
+						name_prefix, service->name);
+				if (options)
+					options = realloc(options, strlen(options) + length + 1);
+				else {
+					options = malloc(length + 1);
+					memset(options, '\0', strlen(options));
+				}
+				strcat(options, option);
+			}
                 }
                 html = malloc(strlen(SELECT) + strlen(name) + (extra ? strlen(extra) : 0) + strlen(options)
                                 - SELECT_NUM_PARAMS * strlen("%s") + 1);
@@ -293,6 +300,19 @@ void pikul_cleanup()
 		default:
 			break;
 	}
+	/*
+	if (shipping.data)
+                switch (shipping.mode) {
+                        case SERVICES:
+                                pikul_free_services(shipping.data);
+                                break;
+                        case ORDER:
+                                free(shipping.data);
+                                break;
+                        default:
+                                break;
+                }
+		*/
 	free(shipping.base);
 	json_tokener_free(tokener);
 	curl_slist_free_all(shipping.headers);
