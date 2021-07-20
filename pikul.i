@@ -58,6 +58,8 @@
 
 %rename("%(strip:[pikul_])s") "";
 void pikul_init(enum pikul_company, char *[]);
+char *pikul_html(const char *, const char *, double, const char *, const char *, const char *, const char *,
+                char *[], char *[]);
 char **pikul_codes(const char *, const char *, double);
 double pikul_cost(const char *, const char *, double, const char *);
 char *pikul_order(const char *, const char *, const char *, const char *, const char *, const char *,

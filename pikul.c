@@ -5,6 +5,15 @@
 #include <json.h>
 #include "private.h"
 
+#define SELECT \
+"<select name=\"%s\" %s>\n\
+%s\
+\t\t\t\t\t\t\t\t\t\t\t</select>"
+#define SELECT_NUM_PARAMS 3
+#define OPTION \
+"\t\t\t\t\t\t\t\t\t\t\t\t<option value=\"%s\"%s>%s%s</option>\n"
+#define OPTION_NUM_PARAMS 4
+
 CURL *curl;
 json_tokener *tokener;
 struct shipping shipping;
@@ -172,6 +181,43 @@ static int servicecmp(const void *service1, const void *service2)
 {
 	return strcmp((*(struct pikul_service * const *)service1)->code,
 			(*(struct pikul_service * const *)service2)->code);
+}
+
+char *pikul_html(const char *origin, const char *destination, double weight,
+                const char *widget, const char *extra, const char *name, const char *value,
+                char *code_prefixes[], char *name_prefixes[])
+{
+	struct pikul_services *services = pikul_services(origin, destination, weight);
+        char *html;
+        if (!strcmp(widget, "select")) {
+                char *options = NULL;
+                for (size_t i = 0; i < services->length; i++) {
+                        struct pikul_service *service = services->list[i];
+                        char *code_prefix = code_prefixes[shipping.company];
+                        char *name_prefix = name_prefixes[shipping.company];
+                        size_t code_length = strlen(code_prefix) + strlen(service->code);
+                        char code[code_length + 1];
+                        sprintf(code, "%s%s", code_prefix, service->code);
+                        _Bool selected = !strcmp(code, value);
+                        size_t length = strlen(OPTION) + code_length + (selected ? strlen(" selected") : 0)
+                                + strlen(name_prefix) + strlen(service->name)
+                                - OPTION_NUM_PARAMS * strlen("%s");
+                        char option[length + 1];
+                        sprintf(option, OPTION, code, selected ? " selected" : "",
+                                        name_prefix, service->name);
+                        if (options)
+                                options = realloc(options, strlen(options) + length + 1);
+                        else {
+                                options = malloc(length + 1);
+                                memset(options, '\0', strlen(options));
+                        }
+                        strcat(options, option);
+                }
+                html = malloc(strlen(SELECT) + strlen(name) + (extra ? strlen(extra) : 0) + strlen(options)
+                                - SELECT_NUM_PARAMS * strlen("%s") + 1);
+                sprintf(html, SELECT, name, extra ? extra : "", options);
+        }
+        return html;
 }
 
 char **pikul_codes(const char *origin, const char *destination, double weight)
