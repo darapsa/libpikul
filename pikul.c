@@ -285,19 +285,6 @@ void pikul_cleanup()
 		default:
 			break;
 	}
-	/*
-	if (shipping.data)
-                switch (shipping.mode) {
-                        case SERVICES:
-                                pikul_free_services(shipping.data);
-                                break;
-                        case ORDER:
-                                free(shipping.data);
-                                break;
-                        default:
-                                break;
-                }
-		*/
 	free(shipping.base);
 	json_tokener_free(tokener);
 	curl_slist_free_all(shipping.headers);
