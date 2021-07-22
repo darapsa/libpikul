@@ -27,7 +27,6 @@ void pikul_free_services(struct pikul_services *services);
 char *pikul_html(const char *origin, const char *destination, double weight,
                 const char *widget, const char *extra, const char *name, const char *value,
                 char *code_prefixes[], char *name_prefixes[]);
-char **pikul_codes(const char *origin, const char *destination, double weight);
 double pikul_cost(const char *origin, const char *destination, double weight, const char *service);
 char *pikul_order(const char *order_number, const char *service, const char *sender_name,
 		const char *sender_phone, const char *origin, const char *sender_address,

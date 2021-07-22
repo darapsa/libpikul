@@ -227,21 +227,6 @@ char *pikul_html(const char *origin, const char *destination, double weight,
         return html;
 }
 
-char **pikul_codes(const char *origin, const char *destination, double weight)
-{
-        char **codes = malloc(sizeof(char *));
-        codes[0] = NULL;
-	struct pikul_services *services = pikul_services(origin, destination, weight);
-	if (!services || !services->length)
-		return codes;
-        codes = realloc(codes, (services->length + 1) * sizeof(char *));
-        size_t i = 0;
-        for (i = 0; i < services->length; i++)
-                codes[i] = services->list[i]->code;
-        codes[i] = NULL;
-        return codes;
-}
-
 double pikul_cost(const char *origin, const char *destination, double weight, const char *code)
 {
 	struct pikul_services *services = pikul_services(origin, destination, weight);
