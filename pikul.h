@@ -12,18 +12,13 @@ struct pikul_service {
 	double cost;
 };
 
-struct pikul_services {
-	size_t length;
-	struct pikul_service *list[];
-};
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 void pikul_init(enum pikul_company company, char *provisions[]);
-struct pikul_services *pikul_services(const char *origin, const char *destination, double weight);
-void pikul_free_services(struct pikul_services *services);
+struct pikul_service **pikul_services(const char *origin, const char *destination, double weight);
+void pikul_free_services(struct pikul_service **services);
 char *pikul_html(const char *origin, const char *destination, double weight,
                 const char *widget, const char *extra, const char *name, const char *value,
                 char *code_prefixes[], char *name_prefixes[]);

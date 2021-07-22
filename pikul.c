@@ -63,15 +63,13 @@ static size_t handle(char *contents, size_t size, size_t nmemb, void *data)
 			struct json_object *array = NULL;
 			recurse(response, shipping.trail, &array);
 			size_t length = json_object_array_length(array);
-			shipping.data = malloc(sizeof(struct pikul_services)
-					+ sizeof(struct pikul_service *[length]));
-			struct pikul_services *services  = (struct pikul_services *)shipping.data;
-			services->length = length;
+			shipping.data = malloc((length + 1) * sizeof(struct pikul_service *));
+			struct pikul_service **services  = (struct pikul_service **)shipping.data;
 			const char **attributes = (const char **)data;
 			enum { CODE, NAME, ETD, COST };
 			for (size_t i = 0; i < length; i++) {
-				services->list[i] = malloc(sizeof(struct pikul_service));
-				struct pikul_service *service = services->list[i];
+				services[i] = malloc(sizeof(struct pikul_service));
+				struct pikul_service *service = services[i];
 				json_object *object = json_object_array_get_idx(array, i);
 				struct json_object_iterator iterator = json_object_iter_begin(object);
 				struct json_object_iterator iterator_end = json_object_iter_end(object);
@@ -96,6 +94,7 @@ static size_t handle(char *contents, size_t size, size_t nmemb, void *data)
 					json_object_iter_next(&iterator);
 				}
 			}
+			services[length] = NULL;
 			break;
 		case ORDER:
 			;
@@ -137,7 +136,7 @@ void pikul_init(enum pikul_company company, char *provisions[])
 	tokener = json_tokener_new();
 }
 
-struct pikul_services *pikul_services(const char *origin, const char *destination, double weight)
+struct pikul_service **pikul_services(const char *origin, const char *destination, double weight)
 {
 	shipping.post = NULL;
 	const char **attributes;
@@ -157,7 +156,7 @@ struct pikul_services *pikul_services(const char *origin, const char *destinatio
 	if (shipping.post)
 		free(shipping.post);
 	free(shipping.url);
-	return (struct pikul_services *)shipping.data;
+	return (struct pikul_service **)shipping.data;
 }
 
 static inline void free_service(struct pikul_service *service)
@@ -170,10 +169,11 @@ static inline void free_service(struct pikul_service *service)
 	free(service);
 }
 
-void pikul_free_services(struct pikul_services *services)
+void pikul_free_services(struct pikul_service **services)
 {
-	for (size_t i = 0; i < services->length; i++)
-		free_service(services->list[i]);
+	size_t i = 0;
+	while (services[i])
+		free_service(services[i++]);
 	free(services);
 }
 
@@ -184,20 +184,21 @@ static int servicecmp(const void *service1, const void *service2)
 }
 
 char *pikul_html(const char *origin, const char *destination, double weight,
-                const char *widget, const char *extra, const char *name, const char *value,
-                char *code_prefixes[], char *name_prefixes[])
+		const char *widget, const char *extra, const char *name, const char *value,
+		char *code_prefixes[], char *name_prefixes[])
 {
-	struct pikul_services *services = pikul_services(origin, destination, weight);
-        char *html;
-        if (!strcmp(widget, "select")) {
-                char *options = NULL;
-		if (!services || !services->length) {
+	struct pikul_service **services = pikul_services(origin, destination, weight);
+	char *html;
+	if (!strcmp(widget, "select")) {
+		char *options = NULL;
+		if (!services || !services[0]) {
 			static const char *empty = "<option value=\"\">Not enough information</option>";
 			options = malloc(strlen(empty) + 1);
 			strcpy(options, empty);
 		} else {
-			for (size_t i = 0; i < services->length; i++) {
-				struct pikul_service *service = services->list[i];
+			size_t i = 0;
+			struct pikul_service *service;
+			while ((service = services[i++])) {
 				char *code_prefix = code_prefixes[shipping.company];
 				char *name_prefix = name_prefixes[shipping.company];
 				size_t code_length = strlen(code_prefix) + strlen(service->code);
@@ -219,26 +220,31 @@ char *pikul_html(const char *origin, const char *destination, double weight,
 				}
 				strcat(options, option);
 			}
-                }
-                html = malloc(strlen(SELECT) + strlen(name) + (extra ? strlen(extra) : 0) + strlen(options)
-                                - SELECT_NUM_PARAMS * strlen("%s") + 1);
-                sprintf(html, SELECT, name, extra ? extra : "", options);
-        }
-        return html;
+		}
+		html = malloc(strlen(SELECT) + strlen(name) + (extra ? strlen(extra) : 0) + strlen(options)
+				- SELECT_NUM_PARAMS * strlen("%s") + 1);
+		sprintf(html, SELECT, name, extra ? extra : "", options);
+	}
+	if (services)
+		pikul_free_services(services);
+	return html;
 }
 
 double pikul_cost(const char *origin, const char *destination, double weight, const char *code)
 {
-	struct pikul_services *services = pikul_services(origin, destination, weight);
-	if (!services || !services->length)
+	struct pikul_service **services = pikul_services(origin, destination, weight);
+	if (!services || !services[0])
 		return .0;
-	qsort(services->list, services->length, sizeof(struct pikul_service *), servicecmp);
+	size_t length = 0;
+	while (services[length])
+		length++;
+	qsort(services, length, sizeof(struct pikul_service *), servicecmp);
 	struct pikul_service *key_service = malloc(sizeof(struct pikul_service));
 	memset(key_service, '\0', sizeof(struct pikul_service));
 	key_service->code = malloc(strlen(code) + 1);
 	strcpy(key_service->code, code);
-	double cost = (*(struct pikul_service **)bsearch(&key_service, services->list,
-				services->length, sizeof(struct pikul_service *), servicecmp))->cost;
+	double cost = (*(struct pikul_service **)bsearch(&key_service, services,
+				length, sizeof(struct pikul_service *), servicecmp))->cost;
 	free_service(key_service);
 	pikul_free_services(services);
 	return cost;
@@ -254,7 +260,7 @@ char *pikul_order(const char *order_number, const char *service, const char *sen
 	switch (shipping.company) {
 		case PIKUL_ANTERAJA:
 			anteraja_order(order_number, service, sender_name, sender_phone, origin,
-                                        sender_address, sender_postal, receiver_name, receiver_phone,
+					sender_address, sender_postal, receiver_name, receiver_phone,
 					destination, receiver_address, receiver_postal, nitems, items,
 					subtotal);
 			break;
