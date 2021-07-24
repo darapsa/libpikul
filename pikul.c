@@ -201,8 +201,10 @@ char *pikul_html(char *origins[], char *destinations[], double weight,
 	struct pikul_service **services[PIKUL_END];
 	bool no_service = true;
 	for (enum pikul_company company = PIKUL; company < PIKUL_END; company++) {
-		if (!shipping_list[company])
+		if (!shipping_list[company]) {
+			services[company] = NULL;
 			continue;
+		}
 		services[company] = pikul_services(company,
 				origins[company], destinations[company], weight);
 		if (services[company] && services[company][0])
