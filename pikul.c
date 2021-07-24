@@ -320,7 +320,8 @@ char *pikul_order(enum pikul_company company, const char *order_number, const ch
 void pikul_cleanup()
 {
 	for (enum pikul_company company = PIKUL; company < PIKUL_END; company++) {
-		if (!shipping_list[company])
+		struct shipping *shipping = shipping_list[company];
+		if (!shipping)
 			continue;
 		switch (company) {
 			case PIKUL_ANTERAJA:
@@ -329,11 +330,12 @@ void pikul_cleanup()
 			default:
 				break;
 		}
-		struct shipping *shipping = shipping_list[company];
 		free(shipping->base);
 		json_tokener_free(shipping->tokener);
 		curl_slist_free_all(shipping->headers);
 		curl_easy_cleanup(shipping->handle);
+		free(shipping);
+		shipping_list[company] = NULL;
 	}
 	curl_global_cleanup();
 }
