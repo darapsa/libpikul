@@ -1,5 +1,6 @@
-#ifdef DEBUG
+#if defined DEBUG || defined LOG_PATH
 #include <stdio.h>
+#include <time.h>
 #endif
 #include <string.h>
 #include <stdbool.h>
@@ -36,9 +37,16 @@ static void recurse(struct json_object *outer, const char *trail[], struct json_
 static size_t handle(char *contents, size_t size, size_t nmemb, struct shipping *shipping)
 {
 	size_t realsize = size * nmemb;
-#ifdef DEBUG
+#if defined DEBUG || defined LOG_PATH
 	contents[realsize] = '\0';
-	fprintf(stderr, "%s\n", contents);
+	time_t now = time(NULL);
+#ifdef LOG_PATH
+	FILE *log = fopen(LOG_PATH, "a");
+	fprintf(log, "%s%s\n", ctime(&now), contents);
+	fclose(log);
+#else
+	fprintf(stderr, "%s%s\n", ctime(&now), contents);
+#endif
 #endif
 	json_tokener *tokener = shipping->tokener;
 	json_object *response = json_tokener_parse_ex(tokener, contents, realsize);
