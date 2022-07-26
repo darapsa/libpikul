@@ -2,6 +2,7 @@ aclocal.m4
 ar-lib
 autom4te.cache
 autoscan-2.69.log
+build
 compile
 config.*
 configure
@@ -9,8 +10,12 @@ configure.scan
 depcomp
 install-sh
 ltmain.sh
-Makefile.in
+MYMETA.*
+Makefile*
 missing
+*_wrap.c
+*blib
+*.bs
+*.o
 *.old
 *.p*
-*_wrap.c
