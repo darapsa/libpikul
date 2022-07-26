@@ -11,7 +11,8 @@ depcomp
 install-sh
 ltmain.sh
 MYMETA.*
-Makefile*
+Makefile
+Makefile.in
 missing
 *_wrap.c
 *blib
