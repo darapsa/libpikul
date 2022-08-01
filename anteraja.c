@@ -64,10 +64,12 @@ const char **anteraja_init(char *provisions[])
 		prefix = malloc(strlen(provisions[PREFIX]) + 1);
 		strcpy(prefix, provisions[PREFIX]);
 	}
-	shipping->headers = curl_slist_append(shipping->headers, "Content-Type:application/json");
 	static const char *status_trail[] = { "status", NULL };
 	shipping->status_trail = status_trail;
-	static const char *fields[] = { "access-key-id", "secret-access-key", NULL };
+	/* Base path is already set at this point,
+	   so the slot can be used for the content type header. */
+	provisions[BASE_PATH] = "application/json";
+	static const char *fields[] = { "access-key-id", "secret-access-key", "Content-Type" };
 	return fields;
 }
 
