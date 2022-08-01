@@ -1,3 +1,10 @@
+*~
+*_wrap.c
+*blib
+*.bs
+*.o
+*.old
+*.p*
 aclocal.m4
 ar-lib
 autom4te.cache
@@ -14,9 +21,3 @@ MYMETA.*
 Makefile
 Makefile.in
 missing
-*_wrap.c
-*blib
-*.bs
-*.o
-*.old
-*.p*
