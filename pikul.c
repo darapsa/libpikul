@@ -130,7 +130,7 @@ void pikul_init(enum pikul_company company, char *provisions[])
 	curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 #endif
 	shipping->headers = NULL;
-	const char **fields;
+	const char **fields = NULL;
 	shipping_list[company] = shipping;
 	switch (company) {
 		case PIKUL_ANTERAJA:
@@ -205,7 +205,7 @@ char *pikul_html(char *origins[], char *destinations[], double weight,
 		const char *widget, const char *extra, const char *name, const char *value,
 		char *code_prefixes[], char *name_prefixes[])
 {
-	char *html;
+	char *html = NULL;
 	struct pikul_service **services[PIKUL_END];
 	bool no_service = true;
 	for (enum pikul_company company = PIKUL; company < PIKUL_END; company++) {
