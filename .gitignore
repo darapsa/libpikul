@@ -5,6 +5,7 @@
 *.o
 *.old
 *.p*
+*.swp
 aclocal.m4
 ar-lib
 autom4te.cache
