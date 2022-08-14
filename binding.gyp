@@ -22,4 +22,4 @@
 		}
 	]
 }
-
+# vim: filetype=json
