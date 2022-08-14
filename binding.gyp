@@ -2,7 +2,7 @@
 	"targets": [
 		{
 			"target_name": "pikul",
-			"sources": [ "pikul.cxx", "pikul_wrap.cxx" ]
+			"sources": [ "pikul.c", "pikul_wrap.cxx" ]
 		}
 	]
 }
