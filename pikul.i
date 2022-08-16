@@ -3,6 +3,8 @@
 #include "pikul.h"
 %}
 
+#ifdef SWIGPERL
+
 %typemap(in) char *[] {
         AV *tempav = (AV *)SvRV($input);
         I32 len = av_len(tempav);
@@ -40,6 +42,8 @@
 %typemap(freearg) char **[] {
         free($1);
 }
+
+#endif
 
 %rename("%(strip:[pikul_])s") "";
 %include "pikul.h"
