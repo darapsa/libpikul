@@ -2,7 +2,11 @@
 	"targets": [
 		{
 			"target_name": "pikul",
-			"sources": [ "pikul.c", "pikul_wrap.cxx" ],
+			"sources": [
+				"pikul.c",
+				"anteraja.c",
+				"pikul_wrap.cxx"
+			],
 			"conditions": [
 				['OS=="freebsd"', {
 					"include_dirs": [
@@ -18,6 +22,11 @@
 					]
 				}
 				]
+			],
+			"ldflags": [
+				"-L/usr/local/lib",
+				"-lcurl",
+				"-ljson-c"
 			]
 		}
 	]
