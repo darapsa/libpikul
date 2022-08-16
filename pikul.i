@@ -42,11 +42,4 @@
 }
 
 %rename("%(strip:[pikul_])s") "";
-void pikul_init(enum pikul_company, char *[]);
-char *pikul_html(char *[], char *[], double, const char *, const char *, const char *, const char *,
-                char *[], char *[]);
-double pikul_cost(enum pikul_company, const char *, const char *, const char *, double);
-char *pikul_order(enum pikul_company, const char *, const char *, const char *, const char *, const char *,
-                const char *, const char *, const char *, const char *, const char *, const char *,
-                const char *, int, char **[], double);
-void pikul_cleanup();
+%include "pikul.h"
