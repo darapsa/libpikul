@@ -4,8 +4,28 @@
 %}
 
 #ifdef SWIGJAVASCRIPT
-%include "carrays.i"
-%array_functions(char *, stringArray);
+%inline %{
+        char *provisions[3];
+        void provisions_set(int i, char *val)
+        {
+                if (provisions[i])
+                        free(provisions[i]);
+                provisions[i] = (char *)malloc(strlen(val) + 1);
+                strcpy(provisions[i], val);
+        }
+        char *provisions_get(int i)
+        {
+                return provisions[i];
+        }
+        void provisions_clear()
+        {
+                for (int i = 0; i < 3; i++)
+                        if (provisions[i]) {
+                                free(provisions[i]);
+                                provisions[i] = NULL;
+                        }
+        }
+%}
 #endif
 
 #ifdef SWIGPERL
