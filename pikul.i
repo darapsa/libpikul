@@ -8,8 +8,6 @@
         char *provisions[3];
         void provisions_set(int i, char *val)
         {
-                if (provisions[i])
-                        free(provisions[i]);
                 provisions[i] = (char *)malloc(strlen(val) + 1);
                 strcpy(provisions[i], val);
         }
