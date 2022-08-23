@@ -3,6 +3,6 @@
 	"version": "0.0.0",
         "main": "pikul.js",
 	"scripts": {
-		"build": "\"swig -javascript -node -c++ pikul.i\" \"node-gyp configure build\""
+		"install": "\"swig -javascript -node -c++ pikul.i\" \"node-gyp configure build\""
 	}
 }
