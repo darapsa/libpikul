@@ -1,5 +1,8 @@
 {
         "name": "pikul",
 	"version": "0.0.0",
-        "main": "pikul.js"
+        "main": "pikul.js",
+	"scripts": {
+		"build": "\"swig -javascript -node -c++ pikul.i\" \"node-gyp configure build\""
+	}
 }
