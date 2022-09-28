@@ -265,6 +265,150 @@ char *pikul_html(char *origins[], char *destinations[], double weight,
 	return html;
 }
 
+static const size_t delivery_date_len = 25;
+
+static inline void get_delivery_date(struct tm *tp, long diff,
+		char *delivery_date)
+{
+	if (diff)
+		tp->tm_mday += diff;
+	else
+		tp->tm_hour += 8;
+	mktime(tp);
+	strftime(delivery_date, delivery_date_len, "%Y-%m-%d %H:%M:%S +0700",
+			tp);
+	delivery_date[delivery_date_len] = '\0';
+	if (diff)
+		tp->tm_mday -= diff;
+	else
+		tp->tm_hour -= 8;
+}
+
+static inline long crop_limit(size_t len, char *offset)
+{
+	char str[len + 1];
+	strncpy(str, offset, len);
+	str[len] = '\0';
+	return strtol(str, NULL, 10);
+}
+
+char *pikul_shopify(char *origins[], char *destinations[], double weight)
+{
+	struct pikul_service **services[PIKUL_END];
+	for (enum pikul_company company = PIKUL; company < PIKUL_END;
+			company++) {
+		if (!shipping_list[company]) {
+			services[company] = NULL;
+			continue;
+		}
+		services[company] = pikul_services(company, origins[company],
+				destinations[company], (double)(weight / 1000));
+	}
+	static const char *prefix = "{\"rates\":[";
+	const size_t prefix_len = strlen(prefix);
+	char *json = malloc(prefix_len + 1);
+	strcpy(json, prefix);
+	static const char *tmpl =
+		"{"
+		"\"service_name\":\"%s\","
+		"\"service_code\":\"%s%s\","
+		"\"total_price\":%d,"
+		"\"description\":\"%s\","
+		"\"currency\":\"%s\","
+		"\"min_delivery_date\":\"%s\","
+		"\"max_delivery_date\":\"%s\""
+		"},";
+	const size_t tmpl_len = strlen(tmpl) - strlen("%s") * 7 - strlen("%d");
+	size_t infix_len = 0;
+	for (enum pikul_company company = PIKUL; company < PIKUL_END;
+			company++) {
+		if (!services[company])
+			continue;
+		if (!services[company][0]) {
+			free(services[company]);
+			continue;
+		}
+		size_t i = 0;
+		struct pikul_service *service;
+		while ((service = services[company][i])) {
+			const char *code_prefix;
+			size_t cost_len = 2;
+			const char *currency;
+			char min_delivery_date[delivery_date_len + 1];
+			char max_delivery_date[delivery_date_len + 1];
+			switch (company) {
+				case PIKUL_ANTERAJA:
+					code_prefix = "anteraja_";
+					cost_len += strlen("45000");
+					currency = "IDR";
+					long min, max;
+					{
+						size_t range_len
+							= strlen(service->etd)
+							- strlen(" Day");
+						char range[range_len + 1];
+						strncpy(range, service->etd,
+								range_len);
+						range[range_len] = '\0';
+						static const char *dash = " - ";
+						if (strstr(range, dash)) {
+							const size_t min_len
+								= strcspn(range, dash);
+							min = crop_limit(
+									min_len,
+									range);
+							const size_t dash_len
+								= strlen(dash);
+							max = crop_limit(range_len
+									- dash_len
+									- min_len,
+									&range[min_len
+									+ dash_len]);
+						} else
+							min = max = strtol(range,
+									NULL, 10);
+					}
+					struct tm *tp = localtime(&(time_t)
+							{ time(NULL) });
+					get_delivery_date(tp, min,
+							min_delivery_date);
+					get_delivery_date(tp, max,
+							max_delivery_date);
+					break;
+				default:
+					code_prefix = "";
+					cost_len += strlen("0");
+					currency = "";
+					memset(min_delivery_date, '\0', sizeof
+							min_delivery_date);
+					memset(max_delivery_date, '\0', sizeof
+							min_delivery_date);
+					break;
+			}
+			size_t rate_len = tmpl_len + strlen(service->name) * 2
+				+ strlen(code_prefix) + strlen(service->code)
+				+ cost_len + strlen(currency)
+				+ delivery_date_len * 2;
+			char rate[rate_len + 1];
+			sprintf(rate, tmpl, service->name, code_prefix,
+					service->code, (int)service->cost * 100,
+					service->name, currency,
+					min_delivery_date, max_delivery_date);
+			const size_t json_len = strlen(json);
+			json = realloc(json, json_len + rate_len + 1);
+			strlcpy(&json[json_len], rate, rate_len + 1);
+			infix_len += rate_len - i++ ? 0 : strlen(",");
+		}
+		pikul_free_services(services[company]);
+	}
+	const size_t json_len = prefix_len + infix_len;
+	static const char *suffix = "]}";
+	const size_t suffix_len = strlen(suffix);
+	json = realloc(json, json_len + suffix_len + 1);
+	strlcpy(&json[json_len], suffix, suffix_len + 1);
+	return json;
+}
+
 double pikul_cost(enum pikul_company company, const char *code,
 		const char *origin, const char *destination, double weight)
 {
