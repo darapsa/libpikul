@@ -395,7 +395,7 @@ char *pikul_shopify(char *origins[], char *destinations[], long grams)
 			const size_t json_len = strlen(json);
 			json = realloc(json, json_len + rate_len + 1);
 			strlcpy(&json[json_len], rate, rate_len + 1);
-			infix_len += rate_len - i++ ? 0 : strlen(",");
+			infix_len += rate_len - (i++ ? 0 : strlen(","));
 		}
 		pikul_free_services(services[company]);
 	}
