@@ -302,7 +302,7 @@ char *pikul_shopify(char *origins[], char *destinations[], long grams)
 			continue;
 		}
 		services[company] = pikul_services(company, origins[company],
-				destinations[company], (double)(grams / 1000));
+				destinations[company], (double)grams / 1000.0);
 	}
 	static const char *prefix = "{\"rates\":[";
 	const size_t prefix_len = strlen(prefix);
