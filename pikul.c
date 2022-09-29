@@ -45,7 +45,7 @@ static size_t handle(char *contents, size_t size, size_t nmemb, struct shipping 
 	fprintf(log, "%s%s\n", ctime(&now), contents);
 	fclose(log);
 #else
-	fprintf(stderr, "%s%s\n", ctime(&now), contents);
+	printf("%s%s\n", ctime(&now), contents);
 #endif
 #endif
 	json_tokener *tokener = shipping->tokener;
