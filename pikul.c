@@ -292,7 +292,7 @@ static inline long crop_limit(size_t len, char *offset)
 	return strtol(str, NULL, 10);
 }
 
-char *pikul_shopify(char *origins[], char *destinations[], double weight)
+const char *pikul_shopify(char *origins[], char *destinations[], long grams)
 {
 	struct pikul_service **services[PIKUL_END];
 	for (enum pikul_company company = PIKUL; company < PIKUL_END;
@@ -302,7 +302,7 @@ char *pikul_shopify(char *origins[], char *destinations[], double weight)
 			continue;
 		}
 		services[company] = pikul_services(company, origins[company],
-				destinations[company], (double)(weight / 1000));
+				destinations[company], (double)(grams / 1000));
 	}
 	static const char *prefix = "{\"rates\":[";
 	const size_t prefix_len = strlen(prefix);

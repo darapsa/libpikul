@@ -25,7 +25,7 @@ void pikul_free_services(struct pikul_service **services);
 char *pikul_html(char *origins[], char *destinations[], double weight,
                 const char *widget, const char *extra, const char *name, const char *value,
                 char *code_prefixes[], char *name_prefixes[]);
-char *pikul_shopify(char *origins[], char *destinations[], double weight);
+const char *pikul_shopify(char *origins[], char *destinations[], long grams);
 double pikul_cost(enum pikul_company company, const char *service,
 		const char *origin, const char *destination, double weight);
 char *pikul_order(enum pikul_company company, const char *order_number, const char *service,
