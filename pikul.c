@@ -1,8 +1,6 @@
-#if defined DEBUG || defined LOG_PATH
 #include <stdio.h>
-#include <time.h>
-#endif
 #include <string.h>
+#include <time.h>
 #include <stdbool.h>
 #include "private.h"
 
