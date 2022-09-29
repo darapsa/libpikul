@@ -292,7 +292,7 @@ static inline long crop_limit(size_t len, char *offset)
 	return strtol(str, NULL, 10);
 }
 
-const char *pikul_shopify(char *origins[], char *destinations[], long grams)
+char *pikul_shopify(char *origins[], char *destinations[], long grams)
 {
 	struct pikul_service **services[PIKUL_END];
 	for (enum pikul_company company = PIKUL; company < PIKUL_END;
