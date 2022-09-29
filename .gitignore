@@ -9,7 +9,7 @@
 aclocal.m4
 ar-lib
 autom4te.cache
-autoscan-2.69.log
+autoscan*.log
 build
 compile
 config.*

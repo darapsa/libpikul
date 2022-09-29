@@ -5,9 +5,10 @@ AM_PROG_AR
 LT_INIT
 PKG_CHECK_MODULES([DEPS], [libcurl json-c])
 AC_C_INLINE
-AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([strstr strcspn strtol memset])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
+AC_FUNC_MKTIME
 AC_TYPE_SIZE_T
 AC_CONFIG_FILES([Makefile pikul.pc])
 AC_OUTPUT
